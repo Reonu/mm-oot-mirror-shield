@@ -5,13 +5,13 @@
 
 # Unique ID of this mod. Pick something long enough that it'll never be the same as any other mod.
 # The name displayed in the mod management menu is separate from this so this doesn't need to be human readable.
-id = "mm_recomp_mod_template"
+id = "mm_oot_mirro_shield"
 
 # Version of this mod.
 version = "1.0.0"
 
 # The name that will show up for this mod in the mod menu. This should be human readable.
-display_name = "Always Spin Attack"
+display_name = "OoT Mirror Shield"
 
 # The description that will show up when this mod is displayed in the mod menu. This should be human readable.
 description =  """
@@ -52,7 +52,7 @@ native_libraries = [
 elf_path = "build/mod.elf"
 
 # Output mod filename.
-mod_filename = "mm_recomp_mod_template"
+mod_filename = "mm_oot_mirror_shield"
 
 # Reference symbol files.
 func_reference_syms_file = "Zelda64RecompSyms/mm.us.rev1.syms.toml"
@@ -62,28 +62,45 @@ data_reference_syms_files = [ "Zelda64RecompSyms/mm.us.rev1.datasyms.toml", "Zel
 additional_files = [ ]
 
 [[manifest.config_options]]
-id = "enum_option"
-name = "Enum Option"
-description = "Test enum config option"
+id = "mirror_shield_design"
+name = "Mirror Shield Design"
+description = "Changes between the N64 design and the GC/Wii/3DS design"
 type = "Enum"
-options = [ "First", "Second" ]
-default = "First"
+options = [ "N64", "GC/Wii/3DS" ]
+default = "N64"
 
 [[manifest.config_options]]
-id = "number_option"
-name = "Number Option"
-description = "Test number config option."
+id = "mirror_shield_color_r"
+name = "Red Value for Shield Frame"
+description = "The red value for the shield frame. The default is 215, which matches the OoT shield."
 type = "Number"
 min = 0
-max = 10
-step = 0.1
+max = 255
+step = 1
 precision = 1
 percent = false
-default = 1
+default = 215
 
 [[manifest.config_options]]
-id = "string_option"
-name = "String Option"
-description = "Test string config option."
-type = "String"
-default = "Lorem Ipsum"
+id = "mirror_shield_color_g"
+name = "Green Value for Shield Frame"
+description = "The green value for the shield frame. The default is 0, which matches the OoT shield."
+type = "Number"
+min = 0
+max = 255
+step = 1
+precision = 1
+percent = false
+default = 0
+
+[[manifest.config_options]]
+id = "mirror_shield_color_b"
+name = "Blue Value for Shield Frame"
+description = "The blue value for the shield frame. The default is 0, which matches the OoT shield."
+type = "Number"
+min = 0
+max = 255
+step = 1
+precision = 1
+percent = false
+default = 0
