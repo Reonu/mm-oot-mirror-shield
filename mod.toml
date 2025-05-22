@@ -5,7 +5,7 @@
 
 # Unique ID of this mod. Pick something long enough that it'll never be the same as any other mod.
 # The name displayed in the mod management menu is separate from this so this doesn't need to be human readable.
-id = "mm_oot_mirro_shield"
+id = "mm_reonu_oot_mirror_shield"
 
 # Version of this mod.
 version = "1.0.0"
@@ -15,17 +15,14 @@ display_name = "OoT Mirror Shield"
 
 # The description that will show up when this mod is displayed in the mod menu. This should be human readable.
 description =  """
-This is an example mod for Majora's Mask: Recompiled that can be used as a template for creating mods. \
-When this mod is enabled, you will always perform a quickspin when swinging your sword.
-
-For more details, see https://github.com/Zelda64Recomp/MMRecompModTemplate."""
+Replaces the Mirror Shield with the OoT version. Includes both designs, and also includes an option to change the border color."""
 
 # A short description that will show up in this mod's entry in the mod list. This should be human readable and kept short
 # to prevent it from being cut off due to the limited space.
-short_description = "Always perform a quickspin when swinging your sword."
+short_description = "Replaces the Mirror Shield with the OoT version."
 
 # Authors of this mod.
-authors = [ "Your name here" ]
+authors = [ "Reonu" ]
 
 # ID of the target recomp game.
 game_id = "mm"
@@ -59,7 +56,7 @@ func_reference_syms_file = "Zelda64RecompSyms/mm.us.rev1.syms.toml"
 data_reference_syms_files = [ "Zelda64RecompSyms/mm.us.rev1.datasyms.toml", "Zelda64RecompSyms/mm.us.rev1.datasyms_static.toml" ]
 
 # Additional files to include in the mod.
-additional_files = [ ]
+additional_files = ["thumb.dds"]
 
 [[manifest.config_options]]
 id = "mirror_shield_design"
