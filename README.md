@@ -5,9 +5,6 @@ This mod replaces the mirror shield with the OoT version. You can switch between
 
 ![Mod Menu](https://github.com/user-attachments/assets/cc38d445-490e-45f7-9b8f-1a82fd73aa3d)
 
-
-
-
 ### Building
 * First, run `make` (with an optional job count) to build the mod code itself.
 * Next, run the `RecompModTool` utility with `mod.toml` as the first argument and the build dir (`build` in the case of this template) as the second argument.
