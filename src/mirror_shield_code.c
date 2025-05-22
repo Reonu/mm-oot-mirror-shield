@@ -9,6 +9,7 @@
 
 DECLARE_ROM_SEGMENT(object_link_child);
 DECLARE_ROM_SEGMENT(object_mir_ray);
+DECLARE_ROM_SEGMENT(icon_item_static_yar);
 
 extern Gfx* gPlayerShields[];
 extern Gfx gLinkHumanMirrorShieldDL[];
@@ -48,7 +49,6 @@ enum OnOffToggles {
     TOGGLE_ON,
     TOGGLE_OFF,
 };
-
 RECOMP_HOOK_RETURN("DmaMgr_ProcessRequest") void after_dma() {
     switch (recomp_get_config_u32("mirror_shield_design")) {
         case MIRROR_SHIELD_DESIGN_N64:
@@ -76,6 +76,36 @@ RECOMP_HOOK_RETURN("DmaMgr_ProcessRequest") void after_dma() {
     }
     gVrom = 0;
     gRam = NULL;
+}
+
+extern u64 gItemIconMirrorShieldTex[];
+u8 gCurIconIsMirrorShield = 0;
+PlayState* gPlayState;
+u8 gId;
+void* gDst;
+u8 gAlreadyTranslated = 0;
+uintptr_t gTranslatedAddress;
+// Translate the address only once, and check if it's currently rendering the Blast Mask icon in the UI. 
+RECOMP_HOOK("CmpDma_LoadFileImpl") void on_CmpDma_LoadFileImpl(uintptr_t segmentRom, s32 id, void* dst, size_t size) {
+    if (!gAlreadyTranslated ) {
+        gTranslatedAddress = DmaMgr_TranslateVromToRom(SEGMENT_ROM_START(icon_item_static_yar));
+        gAlreadyTranslated = 1;
+    }
+    if (id == ITEM_SHIELD_MIRROR && segmentRom == gTranslatedAddress) {
+        gCurIconIsMirrorShield = 1;
+    } else {
+        gCurIconIsMirrorShield = 0;
+    } 
+    gId = id;
+    gDst = dst;
+}
+
+// Replace the Blast Mask icon in the UI with the shades.
+RECOMP_HOOK_RETURN("CmpDma_LoadFileImpl") void return_CmpDma_LoadFileImpl(void) {
+    if (gCurIconIsMirrorShield) {
+        Lib_MemCpy(gDst, gMirrorShieldIconGCTex, ICON_ITEM_TEX_SIZE);
+    }
+    gCurIconIsMirrorShield = 0;
 }
 
 Gfx gOotMirrorShieldColor[] = {

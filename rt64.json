@@ -1,0 +1,53 @@
+{
+    "configuration": {
+        "autoPath": "rt64",
+        "configurationVersion": 2,
+        "hashVersion": 5
+    },
+    "extraFiles": [],
+    "operationFilters": [],
+    "textures": [
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "2dc4aa2034748233"
+            },
+            "path": "hd_textures/mirror_shield_upper_design_gc"
+        },
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "de50d79d0c8a3b16"
+            },
+            "path": "hd_textures/mirror_shield_lower_design"
+        },
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "44dada4ecc2b7e8d"
+            },
+            "path": "hd_textures/mirror_shield_upper_design_n64"
+        },
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "3feede71c09a03d8"
+            },
+            "path": "hd_textures/reflection_lower"
+        },
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "9a91f1bbe7c453d6"
+            },
+            "path": "hd_textures/reflection_upper_n64"
+        },
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "d1ed58f451a74a3e"
+            },
+            "path": "hd_textures/reflection_upper_gc"
+        }
+    ]
+}

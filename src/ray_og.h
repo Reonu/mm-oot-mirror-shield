@@ -1,5 +1,9 @@
+extern u64 ray_og_reflection_lower_sd_i8[];
 extern Vtx ray_og_ray_og_mesh_layer_Opaque_vtx_cull[8];
-extern Vtx ray_og_ray_og_mesh_layer_Opaque_vtx_0[11];
+extern Vtx ray_og_ray_og_mesh_layer_Opaque_vtx_0[8];
 extern Gfx ray_og_ray_og_mesh_layer_Opaque_tri_0[];
-extern Gfx mat_ray_og_f3dlite_material_052_layerOpaque[];
+extern Vtx ray_og_ray_og_mesh_layer_Opaque_vtx_1[4];
+extern Gfx ray_og_ray_og_mesh_layer_Opaque_tri_1[];
+extern Gfx mat_ray_og_reflection_upper[];
+extern Gfx mat_ray_og_reflection_lower[];
 extern Gfx ray_og[];
