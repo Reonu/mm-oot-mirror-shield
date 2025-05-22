@@ -260,7 +260,7 @@ Gfx gOotMirrorShield_gOotMirrorShield_mesh_layer_Opaque_tri_4[] = {
 	gsSP2Triangles(12, 13, 14, 0, 15, 16, 13, 0),
 	gsSPEndDisplayList(),
 };
-
+extern Gfx gOotMirrorShieldColor[];
 Gfx mat_gOotMirrorShield_f3dlite_material_050_layerOpaque[] = {
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_FOG | G_LIGHTING | G_TEXTURE_GEN | G_TEXTURE_GEN_LINEAR | G_SHADING_SMOOTH),
 	gsDPPipeSync(),
@@ -268,7 +268,7 @@ Gfx mat_gOotMirrorShield_f3dlite_material_050_layerOpaque[] = {
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_2CYCLE | G_PM_NPRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 32, G_AC_NONE | G_ZS_PIXEL | G_RM_FOG_SHADE_A | G_RM_AA_ZB_OPA_SURF2),
 	gsSPTexture(1500, 2000, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 1, 1, 1, 255),
+	gsSPDisplayList(gOotMirrorShieldColor),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, gOotMirrorShield_hilite_1_rgba16_rgba16),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 255, 512),

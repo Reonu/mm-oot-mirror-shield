@@ -148,6 +148,11 @@ enum MirrorShieldDesigns {
     MIRROR_SHIELD_DESIGN_GC,
 };
 
+enum OnOffToggles {
+    TOGGLE_ON,
+    TOGGLE_OFF,
+};
+
 RECOMP_HOOK_RETURN("DmaMgr_ProcessRequest") void after_dma() {
     switch (recomp_get_config_u32("mirror_shield_design")) {
         case MIRROR_SHIELD_DESIGN_N64:
@@ -168,87 +173,82 @@ RECOMP_HOOK_RETURN("DmaMgr_ProcessRequest") void after_dma() {
     gRam = NULL;
 }
 
-u32 color_word_from_components(u8 r, u8 g, u8 b, u8 a) {
-    return (_SHIFTL(r, 24, 8) | _SHIFTL(g, 16, 8) | _SHIFTL(b, 8, 8) | _SHIFTL(a, 0, 8));
-}
+Gfx gOotMirrorShieldColor[] = {
+    gsDPSetPrimColor(0, 0xFF, 1, 1, 1, 0),
+    gsSPEndDisplayList()
+};
 
-#define MAX_SCAN 10000
-Gfx* scan_for_color(Gfx* dl, u32 command, u8 r, u8 g, u8 b, u8 a) {
-    Gfx* cur_cmd = dl;
-    // Build the 32-bit color word from the input colors.
-    u32 color_word = color_word_from_components(r, g, b, a);
-
-    for (u32 i = 0; i < MAX_SCAN; i++) {
-        // Get the command ID (top 8 bits of the first word).
-        u32 command_id = (cur_cmd->words.w0 >> 24) & 0xFF;
-        switch (command_id) {
-            case G_ENDDL:
-                // Reached the end of the displaylist without finding the target command.
-                return NULL;
-            case G_DL:
-                // If this is a branchlist (G_DL_NOPUSH) then treat it as the end of a displaylist.
-                {
-                    u32 push = (cur_cmd->words.w0 >> 16) & 0xFF;
-                    if (push == G_DL_NOPUSH) {
-                        return NULL;
-                    }
-                }
+void hsv_to_rgb(float h, float s, float v, Color_RGB8* out) {
+    float r = 0, g = 0, b = 0;
+    if (s == 0) {
+        r = g = b = v;
+    } else {
+        int i;
+        float f, p, q, t;
+        h = h / 60.0f;
+        i = (int)(h);
+        f = h - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i) {
+            case 0:
+                r = v;
+                g = t;
+                b = p;
+                break;
+            case 1:
+                r = q;
+                g = v;
+                b = p;
+                break;
+            case 2:
+                r = p;
+                g = v;
+                b = t;
+                break;
+            case 3:
+                r = p;
+                g = q;
+                b = v;
+                break;
+            case 4:
+                r = t;
+                g = p;
+                b = v;
+                break;
             default:
-                // Just continue forward for any other command.
+                r = v;
+                g = p;
+                b = q;
                 break;
         }
-        // If this is the right command ID, check if the color matches.
-        if (command_id == command) {
-            // Check the color.
-            // TODO this can be changed into a threshold per-component check if catching similar colors is desirable.
-            // This will allow detecting slightly differently colors for recoloring custom models.
-            if (cur_cmd->words.w1 == color_word) {
-                return cur_cmd;
-            }
-        }
+    }
+    out->r = r * 255;
+    out->g = g * 255;
+    out->b = b * 255;
+}
 
-        // Go to the next command.
-        cur_cmd++;
+RECOMP_HOOK("Player_UpdateCommon") void on_Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
+    Color_RGB8* color = NULL;
+    color->r = 0;
+    color->g = 0;
+    color->b = 0;
+    static float hue = 0.0f;
+    hue += recomp_get_config_double("mirror_shield_rainbow_cycle");
+    
+    if (hue >= 360.0f) {
+        hue -= 360.0f;
     }
 
-    recomp_printf("dl patching warning: hit scan limit (started at %08X)\n", (u32)dl);
-
-    return NULL;
-}
-
-bool patch_prim_color(Gfx* dl, u8 old_r, u8 old_g, u8 old_b, u8 old_a, u8 new_r, u8 new_g, u8 new_b, u8 new_a) {
-    // Look for a prim color command with the old color value.
-    Gfx* to_patch = scan_for_color(dl, G_SETPRIMCOLOR, old_r, old_g, old_b, old_a);
-    if (to_patch != NULL) {
-        // Overwrite the color with the new value.
-        to_patch->words.w1 = color_word_from_components(new_r, new_g, new_b, new_a);
-        return true;
+    if (recomp_get_config_u32("mirror_shield_rainbow_mode") == TOGGLE_ON) {
+        hsv_to_rgb(hue, 1.0f, 1.0f, color);
+    } else {
+        color->r = recomp_get_config_u32("mirror_shield_color_r");
+        color->g = recomp_get_config_u32("mirror_shield_color_g");
+        color->b = recomp_get_config_u32("mirror_shield_color_b");
     }
-    return false;
+
+
+    gDPSetPrimColor(&gOotMirrorShieldColor, 0, 0xFF, color->r, color->g, color->b, 255);
 }
-
-
-Gfx** curDList;
-s32 curLimbIndex;
-
-RECOMP_HOOK("Player_OverrideLimbDrawGameplayDefault")
-void Recolor_OverrideLimbDrawDefault(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, Actor* actor) {
-    Player* player = (Player*)actor;
-
-    curLimbIndex = limbIndex;
-    curDList = dList;
-}
-
-RECOMP_HOOK_RETURN("Player_OverrideLimbDrawGameplayDefault")
-void Recolor_AfterOverrideLimbDrawDefault() {
-    if (curDList != NULL && *curDList != NULL) {
-        // Get the real address of the displaylist.
-        recomp_printf("Running");
-        Gfx* toPatch = Lib_SegmentedToVirtual(gOotMirrorShield);
-
-        // Patch the displaylist based on the form's color to point to the custom color DL instead.
-        patch_prim_color(toPatch, 1, 1, 1, 255, 215, 0, 0, 255);
-    }
-    curDList = NULL;
-}
-

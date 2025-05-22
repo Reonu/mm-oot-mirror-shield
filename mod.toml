@@ -104,3 +104,23 @@ step = 1
 precision = 1
 percent = false
 default = 0
+
+[[manifest.config_options]]
+id = "mirror_shield_rainbow_mode"
+name = "Rainbow Shield"
+description = "Increases the shield's performance by giving it RGB."
+type = "Enum"
+options = [ "On", "Off" ]
+default = "Off"
+
+[[manifest.config_options]]
+id = "mirror_shield_rainbow_cycle"
+name = "Rainbow Shield Speed"
+description = "Choose the speed of the rainbow shield effect."
+type = "Number"
+min = 0
+max = 5
+step = 0.1
+precision = 1
+percent = false
+default = 0
