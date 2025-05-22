@@ -6,15 +6,18 @@
 #include "segment_symbols.h"
 #include "ray_og.h"
 #include "texture_data.h"
+#include "gMirrorShieldGI.h"
 
 DECLARE_ROM_SEGMENT(object_link_child);
 DECLARE_ROM_SEGMENT(object_mir_ray);
 DECLARE_ROM_SEGMENT(icon_item_static_yar);
+DECLARE_ROM_SEGMENT(object_gi_shield_3);
 
 extern Gfx* gPlayerShields[];
 extern Gfx gLinkHumanMirrorShieldDL[];
 extern Mtx gLinkHumanMirrorShieldMtx;
 extern Gfx object_mir_ray_DL_0004B0[];
+extern Gfx gGiMirrorShieldDL[];
 
 //Gfx gCustomMirrorShielDL[] = {
     //gsSPDisplayList(gOotMirrorShield),
@@ -46,8 +49,8 @@ enum MirrorShieldDesigns {
 };
 
 enum OnOffToggles {
-    TOGGLE_ON,
     TOGGLE_OFF,
+    TOGGLE_ON,
 };
 RECOMP_HOOK_RETURN("DmaMgr_ProcessRequest") void after_dma() {
     switch (recomp_get_config_u32("mirror_shield_design")) {
@@ -72,6 +75,20 @@ RECOMP_HOOK_RETURN("DmaMgr_ProcessRequest") void after_dma() {
         gSegments[0x06] = OS_K0_TO_PHYSICAL(gRam);
         Gfx* to_patch = Lib_SegmentedToVirtual(object_mir_ray_DL_0004B0);
         gSPBranchList(to_patch , ray_og);
+        gSegments[0x06] = old_segment_6;
+    }
+    if (gVrom == SEGMENT_ROM_START(object_gi_shield_3)) {
+        uintptr_t old_segment_6 = gSegments[0x06];
+        gSegments[0x06] = OS_K0_TO_PHYSICAL(gRam);
+        Gfx* to_patch = (Gfx*)Lib_SegmentedToVirtual(gGiMirrorShieldDL);
+        switch (recomp_get_config_u32("mirror_shield_design")) {
+            case MIRROR_SHIELD_DESIGN_N64:
+                gSPBranchList(to_patch , gMirrorShieldGIN64FullDL);
+                break;
+            case MIRROR_SHIELD_DESIGN_GC:
+                gSPBranchList(to_patch , gMirrorShieldGIGCFullDL);
+                break;
+        }
         gSegments[0x06] = old_segment_6;
     }
     gVrom = 0;
@@ -103,7 +120,14 @@ RECOMP_HOOK("CmpDma_LoadFileImpl") void on_CmpDma_LoadFileImpl(uintptr_t segment
 // Replace the Blast Mask icon in the UI with the shades.
 RECOMP_HOOK_RETURN("CmpDma_LoadFileImpl") void return_CmpDma_LoadFileImpl(void) {
     if (gCurIconIsMirrorShield) {
-        Lib_MemCpy(gDst, gMirrorShieldIconGCTex, ICON_ITEM_TEX_SIZE);
+        switch (recomp_get_config_u32("mirror_shield_design")) {
+            case MIRROR_SHIELD_DESIGN_N64:
+                Lib_MemCpy(gDst, gMirrorShieldIconN64Tex, ICON_ITEM_TEX_SIZE);
+                break;
+            case MIRROR_SHIELD_DESIGN_GC:
+                Lib_MemCpy(gDst, gMirrorShieldIconGCTex, ICON_ITEM_TEX_SIZE);
+                break;
+        }
     }
     gCurIconIsMirrorShield = 0;
 }

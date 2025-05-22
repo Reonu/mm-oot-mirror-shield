@@ -8,7 +8,7 @@
 id = "mm_reonu_oot_mirror_shield"
 
 # Version of this mod.
-version = "0.9.0"
+version = "1.0.0"
 
 # The name that will show up for this mod in the mod menu. This should be human readable.
 display_name = "OoT Mirror Shield"
@@ -111,7 +111,7 @@ id = "mirror_shield_rainbow_mode"
 name = "Rainbow Shield"
 description = "Increases the shield's performance by giving it RGB."
 type = "Enum"
-options = [ "On", "Off" ]
+options = [ "Off", "On" ]
 default = "Off"
 
 [[manifest.config_options]]

@@ -5,6 +5,5 @@ This mod replaces the mirror shield with the OoT version. You can switch between
 
 ![Mod Menu](https://github.com/user-attachments/assets/cc38d445-490e-45f7-9b8f-1a82fd73aa3d)
 
-# Planned updates:
-* Replace GI model
-* Replace UI textures
+HD textures for the shield created by Djipi, edited by GhostlyDark
+HD textures for the UI made by Batts, edited by GhostlyDark

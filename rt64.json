@@ -48,6 +48,20 @@
                 "rt64": "d1ed58f451a74a3e"
             },
             "path": "hd_textures/reflection_upper_gc"
+        },
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "73e568e654d281dd"
+            },
+            "path": "hd_textures/mirror_shield_icon_hd_gc"
+        },
+        {
+            "hashes": {
+                "rice": "",
+                "rt64": "2ba4443ba022a41d"
+            },
+            "path": "hd_textures/mirror_shield_icon_hd_n64"
         }
     ]
 }
