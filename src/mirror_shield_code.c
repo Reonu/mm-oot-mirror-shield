@@ -19,20 +19,10 @@ extern Mtx gLinkHumanMirrorShieldMtx;
 extern Gfx object_mir_ray_DL_0004B0[];
 extern Gfx gGiMirrorShieldDL[];
 
-//Gfx gCustomMirrorShielDL[] = {
-    //gsSPDisplayList(gOotMirrorShield),
-    //gsSPEndDisplayList(),
-//};
-
 Gfx gOotMirrorShieldWithMtxDL[] = {
     gsSPMatrix(&gLinkHumanMirrorShieldMtx, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW),
     gsSPBranchList(gOotMirrorShield),    
 };
-
-//RECOMP_HOOK("Player_Init") void on_Player_Init() {
-    //gPlayerShields[2] = gOotMirrorShieldWithMtxDL;
-    //gPlayerShields[3] = gOotMirrorShieldWithMtxDL;
-//}
 
 void* gRam;
 uintptr_t gVrom;
@@ -53,16 +43,6 @@ enum OnOffToggles {
     TOGGLE_ON,
 };
 RECOMP_HOOK_RETURN("DmaMgr_ProcessRequest") void after_dma() {
-    switch (recomp_get_config_u32("mirror_shield_design")) {
-        case MIRROR_SHIELD_DESIGN_N64:
-            Lib_MemCpy(gMirrorShieldSwappableTexture, gMirrorShieldN64Design, 2048);
-            Lib_MemCpy(gMirrorShieldReflectionSwappableTexture, gMirrorShieldReflectionN64Design, 4096);
-            break;
-        case MIRROR_SHIELD_DESIGN_GC:
-            Lib_MemCpy(gMirrorShieldSwappableTexture, gMirrorShieldGCDesign, 2048);
-            Lib_MemCpy(gMirrorShieldReflectionSwappableTexture, gMirrorShieldReflectionGCDesign, 4096);
-            break;
-    }
     if (gVrom == SEGMENT_ROM_START(object_link_child)) {
         uintptr_t old_segment_6 = gSegments[0x06];
         gSegments[0x06] = OS_K0_TO_PHYSICAL(gRam);
@@ -102,7 +82,6 @@ u8 gId;
 void* gDst;
 u8 gAlreadyTranslated = 0;
 uintptr_t gTranslatedAddress;
-// Translate the address only once, and check if it's currently rendering the Blast Mask icon in the UI. 
 RECOMP_HOOK("CmpDma_LoadFileImpl") void on_CmpDma_LoadFileImpl(uintptr_t segmentRom, s32 id, void* dst, size_t size) {
     if (!gAlreadyTranslated ) {
         gTranslatedAddress = DmaMgr_TranslateVromToRom(SEGMENT_ROM_START(icon_item_static_yar));
@@ -117,7 +96,6 @@ RECOMP_HOOK("CmpDma_LoadFileImpl") void on_CmpDma_LoadFileImpl(uintptr_t segment
     gDst = dst;
 }
 
-// Replace the Blast Mask icon in the UI with the shades.
 RECOMP_HOOK_RETURN("CmpDma_LoadFileImpl") void return_CmpDma_LoadFileImpl(void) {
     if (gCurIconIsMirrorShield) {
         switch (recomp_get_config_u32("mirror_shield_design")) {
@@ -206,4 +184,20 @@ RECOMP_HOOK("Player_UpdateCommon") void on_Player_UpdateCommon(Player* this, Pla
     }
 
     gDPSetPrimColor(&gOotMirrorShieldColor, 0, 0xFF, color.r, color.g, color.b, 255);
+
+    static u8 oldConfigDesign;
+    u8 configDesign = recomp_get_config_u32("mirror_shield_design");
+    if (configDesign != oldConfigDesign) {
+        switch (configDesign) {
+            case MIRROR_SHIELD_DESIGN_N64:
+                Lib_MemCpy(gMirrorShieldSwappableTexture, gMirrorShieldN64Design, 2048);
+                Lib_MemCpy(gMirrorShieldReflectionSwappableTexture, gMirrorShieldReflectionN64Design, 4096);
+                break;
+            case MIRROR_SHIELD_DESIGN_GC:
+                Lib_MemCpy(gMirrorShieldSwappableTexture, gMirrorShieldGCDesign, 2048);
+                Lib_MemCpy(gMirrorShieldReflectionSwappableTexture, gMirrorShieldReflectionGCDesign, 4096);
+                break;
+        }
+        oldConfigDesign = configDesign;
+    }
 }
