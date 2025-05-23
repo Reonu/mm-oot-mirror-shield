@@ -1,7 +1,7 @@
 {
     "name": "OoT_Mirror_Shield",
-    "version_number": "1.0.0",
+    "version_number": "1.0.1",
     "website_url": "https://github.com/Reonu/mm-oot-mirror-shield",
-    "description": "Replaces the Mirror Shield with the OoT version. Includes both designs, and also includes an option to change the border color.",
+    "description": "Replaces the Mirror Shield with the OoT version. Includes both designs, and also includes an option to change the border color. Optional HD textures included.",
     "dependencies": []
 }
